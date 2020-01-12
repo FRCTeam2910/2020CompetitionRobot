@@ -1,5 +1,9 @@
 package org.frcteam2910.c2020;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.frcteam2910.c2020.commands.DriveCommand;
+import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
 import org.frcteam2910.common.robot.input.Axis;
 import org.frcteam2910.common.robot.input.Controller;
 import org.frcteam2910.common.robot.input.XboxController;
@@ -7,7 +11,11 @@ import org.frcteam2910.common.robot.input.XboxController;
 public class RobotContainer {
     private final Controller primaryController = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
 
+    private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+
     public RobotContainer() {
+        CommandScheduler.getInstance().setDefaultCommand(drivetrainSubsystem, new DriveCommand(drivetrainSubsystem, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis()));
+
         configureButtonBindings();
     }
 
@@ -15,15 +23,19 @@ public class RobotContainer {
 
     }
 
-    public Axis getDriveForwardAxis() {
+    private Axis getDriveForwardAxis() {
         return primaryController.getLeftYAxis();
     }
 
-    public Axis getDriveStrafeAxis() {
+    private Axis getDriveStrafeAxis() {
         return primaryController.getLeftXAxis();
     }
 
-    public Axis getDriveRotationAxis() {
+    private Axis getDriveRotationAxis() {
         return primaryController.getRightXAxis();
+    }
+
+    public DrivetrainSubsystem getDrivetrainSubsystem() {
+        return drivetrainSubsystem;
     }
 }

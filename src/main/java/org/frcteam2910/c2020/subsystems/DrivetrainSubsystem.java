@@ -3,7 +3,6 @@ package org.frcteam2910.c2020.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.common.drivers.SwerveModule;
@@ -37,37 +36,37 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private final SwerveModule frontRightModule =
             new Mk2SwerveModuleBuilder(new Vector2(TRACKWIDTH / 2.0, -WHEELBASE / 2.0))
             .angleMotor(
-                    new WPI_TalonFX(Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR))
+                    new WPI_TalonFX(Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR))
             .driveMotor(
-                    new WPI_TalonFX(Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR),
+                    new WPI_TalonFX(Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR),
                     Mk2SwerveModuleBuilder.MotorType.CIM)
             .angleEncoder(
-                    new AnalogInput(Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_PORT),
-                    Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET)
+                    new AnalogInput(Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_PORT),
+                    Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET)
             .build();
 
     private final SwerveModule backLeftModule =
             new Mk2SwerveModuleBuilder(new Vector2(-TRACKWIDTH / 2.0, WHEELBASE / 2.0))
             .angleMotor(
-                    new WPI_TalonFX(Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR))
+                    new WPI_TalonFX(Constants.DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR))
             .driveMotor(
-                    new WPI_TalonFX(Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR),
+                    new WPI_TalonFX(Constants.DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR),
                     Mk2SwerveModuleBuilder.MotorType.CIM)
             .angleEncoder(
-                    new AnalogInput(Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_PORT),
-                    Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET)
+                    new AnalogInput(Constants.DRIVETRAIN_BACK_LEFT_ENCODER_PORT),
+                    Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET)
             .build();
 
     private final SwerveModule backRightModule =
             new Mk2SwerveModuleBuilder(new Vector2(-TRACKWIDTH / 2.0, -WHEELBASE / 2.0))
             .angleMotor(
-                    new WPI_TalonFX(Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR))
+                    new WPI_TalonFX(Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR))
             .driveMotor(
-                    new WPI_TalonFX(Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR),
+                    new WPI_TalonFX(Constants.DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR),
                     Mk2SwerveModuleBuilder.MotorType.CIM)
             .angleEncoder(
-                    new AnalogInput(Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_PORT),
-                    Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET)
+                    new AnalogInput(Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_PORT),
+                    Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET)
             .build();
 
     private final SwerveModule[] modules = {frontLeftModule, frontRightModule, backLeftModule, backRightModule};
@@ -94,10 +93,6 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     }
 
-    public static DrivetrainSubsystem getInstance() {
-        return new DrivetrainSubsystem();
-    }
-
     public RigidTransform2 getPose() {
         synchronized (kinematicsLock) {
             return pose$kinematicsLock;
@@ -112,7 +107,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public void resetGyroAngle(Rotation2 angle) {
         synchronized (sensorLock) {
-            pigeon$sensorLock.setCompassAngle(angle.toDegrees());
+            pigeon$sensorLock.setFusedHeading(angle.toDegrees());
         }
     }
 
@@ -126,10 +121,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
 
         Rotation2 angle;
-        double[] gyroValues = new double[3];
         synchronized (sensorLock) {
-            pigeon$sensorLock.getAccumGyro(gyroValues);
-            angle = new Rotation2(gyroValues[0], gyroValues[1], true);
+            angle = Rotation2.fromDegrees(pigeon$sensorLock.getFusedHeading());
         }
 
         RigidTransform2 pose = swerveOdometry.update(angle, dt, moduleVelocities);
