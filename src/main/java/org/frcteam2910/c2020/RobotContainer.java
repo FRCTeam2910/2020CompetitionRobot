@@ -1,6 +1,5 @@
 package org.frcteam2910.c2020;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.frcteam2910.c2020.commands.DriveCommand;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;

@@ -74,7 +74,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private final SwerveKinematics swerveKinematics = new SwerveKinematics(
             new Vector2(TRACKWIDTH / 2.0, WHEELBASE / 2.0),         //front left
             new Vector2(TRACKWIDTH / 2.0, -WHEELBASE / 2.0),        //front right
-            new Vector2(-TRACKWIDTH / 2.0, -WHEELBASE / 2.0),       //back left
+            new Vector2(-TRACKWIDTH / 2.0, WHEELBASE / 2.0),       //back left
             new Vector2(-TRACKWIDTH / 2.0, -WHEELBASE / 2.0)        //back right
     );
 
@@ -88,10 +88,6 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     private final Object stateLock = new Object();
     private HolonomicDriveSignal driveSignal$stateLock = null;
-
-    public DrivetrainSubsystem() {
-
-    }
 
     public RigidTransform2 getPose() {
         synchronized (kinematicsLock) {
@@ -166,10 +162,5 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
 
         updateModules(driveSignal, dt);
-    }
-
-    @Override
-    public void periodic() {
-
     }
 }

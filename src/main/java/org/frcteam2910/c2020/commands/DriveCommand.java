@@ -11,10 +11,10 @@ public class DriveCommand extends CommandBase {
     private Axis strafe;
     private Axis rotation;
 
-    public DriveCommand(DrivetrainSubsystem drivetrain, Axis f, Axis s, Axis r) {
-        forward = f;
-        strafe = s;
-        rotation = r;
+    public DriveCommand(DrivetrainSubsystem drivetrain, Axis forward, Axis strafe, Axis rotation) {
+        this.forward = forward;
+        this.strafe = strafe;
+        this.rotation = rotation;
 
         drivetrainSubsystem = drivetrain;
 
@@ -29,10 +29,5 @@ public class DriveCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         drivetrainSubsystem.drive(Vector2.ZERO, 0, false);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
     }
 }
