@@ -2,7 +2,10 @@ package org.frcteam2910.c2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.common.drivers.SwerveModule;
@@ -24,7 +27,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private final SwerveModule frontLeftModule =
             new Mk2SwerveModuleBuilder(new Vector2(TRACKWIDTH / 2.0, WHEELBASE / 2.0))
             .angleMotor(
-                    new WPI_TalonFX(Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR))
+                    new CANSparkMax(Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR,
+                            CANSparkMaxLowLevel.MotorType.kBrushless),
+                    Mk2SwerveModuleBuilder.MotorType.NEO)
             .driveMotor(
                     new WPI_TalonFX(Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR),
                     Mk2SwerveModuleBuilder.MotorType.CIM)
@@ -36,7 +41,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private final SwerveModule frontRightModule =
             new Mk2SwerveModuleBuilder(new Vector2(TRACKWIDTH / 2.0, -WHEELBASE / 2.0))
             .angleMotor(
-                    new WPI_TalonFX(Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR))
+                    new CANSparkMax(Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR,
+                            CANSparkMaxLowLevel.MotorType.kBrushless),
+                    Mk2SwerveModuleBuilder.MotorType.NEO)
             .driveMotor(
                     new WPI_TalonFX(Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR),
                     Mk2SwerveModuleBuilder.MotorType.CIM)
@@ -48,7 +55,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private final SwerveModule backLeftModule =
             new Mk2SwerveModuleBuilder(new Vector2(-TRACKWIDTH / 2.0, WHEELBASE / 2.0))
             .angleMotor(
-                    new WPI_TalonFX(Constants.DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR))
+                    new CANSparkMax(Constants.DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR,
+                            CANSparkMaxLowLevel.MotorType.kBrushless),
+                    Mk2SwerveModuleBuilder.MotorType.NEO)
             .driveMotor(
                     new WPI_TalonFX(Constants.DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR),
                     Mk2SwerveModuleBuilder.MotorType.CIM)
@@ -60,7 +69,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private final SwerveModule backRightModule =
             new Mk2SwerveModuleBuilder(new Vector2(-TRACKWIDTH / 2.0, -WHEELBASE / 2.0))
             .angleMotor(
-                    new WPI_TalonFX(Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR))
+                    new CANSparkMax(Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR,
+                            CANSparkMaxLowLevel.MotorType.kBrushless),
+                    Mk2SwerveModuleBuilder.MotorType.NEO)
             .driveMotor(
                     new WPI_TalonFX(Constants.DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR),
                     Mk2SwerveModuleBuilder.MotorType.CIM)
