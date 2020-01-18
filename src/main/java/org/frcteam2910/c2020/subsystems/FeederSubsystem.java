@@ -8,11 +8,8 @@ import org.frcteam2910.common.robot.UpdateManager;
 
 public class FeederSubsystem implements Subsystem, UpdateManager.Updatable {
 
-    TalonFX motor;
+    private TalonFX  motor  = new TalonFX(Constants.FEEDER_MOTOR_PORT);
 
-    public FeederSubsystem(){
-        motor  = new TalonFX(Constants.FEEDER_MOTOR_PORT);
-    }
 
 
     public void spinMotor(double speed){
