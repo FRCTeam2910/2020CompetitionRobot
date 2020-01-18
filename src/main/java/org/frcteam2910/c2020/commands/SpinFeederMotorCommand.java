@@ -14,7 +14,6 @@ public class SpinFeederMotorCommand extends CommandBase {
 
     }
 
-
     @Override
     public void execute(){
         feederSubsystem.spinMotor(motorSpeed);
