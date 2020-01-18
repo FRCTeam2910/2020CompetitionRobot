@@ -1,11 +1,10 @@
 package org.frcteam2910.c2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.common.drivers.SwerveModule;
@@ -17,6 +16,7 @@ import org.frcteam2910.common.math.Rotation2;
 import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.UpdateManager;
 import org.frcteam2910.common.robot.drivers.Mk2SwerveModuleBuilder;
+import org.frcteam2910.common.robot.drivers.NavX;
 import org.frcteam2910.common.util.HolonomicDriveSignal;
 
 
@@ -92,7 +92,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private final SwerveOdometry swerveOdometry = new SwerveOdometry(swerveKinematics, RigidTransform2.ZERO);
 
     private final Object sensorLock = new Object();
-    private PigeonIMU pigeon$sensorLock = new PigeonIMU(Constants.DRIVETRAIN_PIGEON_PORT);
+    private NavX navX$SensorLock = new NavX(SPI.Port.kMXP);
 
     private final Object kinematicsLock = new Object();
     private RigidTransform2 pose$kinematicsLock = RigidTransform2.ZERO;
@@ -114,7 +114,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public void resetGyroAngle(Rotation2 angle) {
         synchronized (sensorLock) {
-            pigeon$sensorLock.setFusedHeading(angle.toDegrees());
+            navX$SensorLock.setAdjustmentAngle(angle);
         }
     }
 
@@ -129,7 +129,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
         Rotation2 angle;
         synchronized (sensorLock) {
-            angle = Rotation2.fromDegrees(pigeon$sensorLock.getFusedHeading());
+            angle = navX$SensorLock.getAngle();
         }
 
         RigidTransform2 pose = swerveOdometry.update(angle, dt, moduleVelocities);

@@ -6,7 +6,7 @@ import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.input.Axis;
 
 public class DriveCommand extends CommandBase {
-    DrivetrainSubsystem drivetrainSubsystem;
+    private DrivetrainSubsystem drivetrainSubsystem;
     private Axis forward;
     private Axis strafe;
     private Axis rotation;
