@@ -4,6 +4,7 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.util.DetectedColor;
 import org.frcteam2910.common.robot.UpdateManager;
 import edu.wpi.first.wpilibj.util.Color;
@@ -42,26 +43,21 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
 
         if(colorFromSensor.red > colorFromSensor.green && colorFromSensor.red > colorFromSensor.blue){//Red is bigger
              return 60 * (((colorFromSensor.green - colorFromSensor.blue) / delta) % 6);
-        }
-        else if(colorFromSensor.green > colorFromSensor.red && colorFromSensor.green > colorFromSensor.blue){//Green is bigger
+        }else if(colorFromSensor.green > colorFromSensor.red && colorFromSensor.green > colorFromSensor.blue){//Green is bigger
             return 60 * (((colorFromSensor.blue - colorFromSensor.red) / delta) + 2);
-        }
-        else{//Blue is bigger
+        }else{//Blue is bigger
             return 60 * (((colorFromSensor.red - colorFromSensor.green) / delta) + 4);
         }
     }
 
     private DetectedColor calculateDetectedColor(double colorHue){
-        if(colorHue > RED_MIN && colorHue < RED_MAX){//Red
+        if(colorHue > RED_MIN && colorHue < RED_MAX){
             return DetectedColor.RED;
-        }
-        else if(colorHue > GREEN_MIN && colorHue < GREEN_MAX){//Green
+        }else if(colorHue > GREEN_MIN && colorHue < GREEN_MAX){
             return DetectedColor.GREEN;
-        }
-        else if(colorHue > BLUE_MIN && colorHue < BLUE_MAX){//Blue
+        }else if(colorHue > BLUE_MIN && colorHue < BLUE_MAX){
             return DetectedColor.BLUE;
-        }
-        else{//Yellow
+        }else{
             return DetectedColor.YELLOW;
         }
     }
