@@ -26,7 +26,17 @@ public class Constants {
     public static final int SHOOTER_DRIVE_MOTOR_PORT_1 = 0;
     public static final int SHOOTER_DRIVE_MOTOR_PORT_2 = 0;
 
+    public static final double WHEEL_OF_FORTUNE_RED_HUE = 45;
+    public static final double WHEEL_OF_FORTUNE_GREEN_HUE = 130;
+    public static final double WHEEL_OF_FORTUNE_BLUE_HUE = 170;
+    public static final double WHEEL_OF_FORTUNE_YELLOW_HUE = 90;
+
     public static final int DRIVETRAIN_PIGEON_PORT = 0;
 
+    public static final int INTAKE_MOTOR = 0;
+    public static final int INTAKE_EXTENSION_SOLENOID = 0;
+
     public static final int PRIMARY_CONTROLLER_PORT = 0;
+
+    public static final int FEEDER_MOTOR_PORT = 0;
 }

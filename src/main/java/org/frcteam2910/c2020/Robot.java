@@ -7,7 +7,9 @@ import org.frcteam2910.common.robot.UpdateManager;
 public class Robot extends TimedRobot {
     private RobotContainer robotContainer = new RobotContainer();
     private UpdateManager updateManager = new UpdateManager(
-        robotContainer.getDrivetrainSubsystem()
+            robotContainer.getDrivetrainSubsystem(),
+            robotContainer.getFeederSubsystem(),
+            robotContainer.getWheelOfFortuneSubsystem()
     );
 
     @Override
