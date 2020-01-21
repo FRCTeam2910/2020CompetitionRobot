@@ -8,12 +8,11 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.common.robot.UpdateManager;
 
-import static org.frcteam2910.common.robot.Constants.CAN_TIMEOUT_MS;
 
 public class ShooterSubsystem implements Subsystem, UpdateManager.Updatable {
     private static final double HOOD_GEAR_REDUCTION = 14.0/60.0;
 
-    private static final double HOOD_COEFFICIENT = ((2 * Math.PI) * HOOD_GEAR_REDUCTION / (2048));
+    private static final double HOOD_SENSOR_COEFFICIENT = ((2.0 * Math.PI) * HOOD_GEAR_REDUCTION / (2048.0));
     private static final double FLYWHEEL_SENSOR_COEFFICIENT = (1.0/1024.0) * (100.0/1000.0) * (1.0/60.0);
 
     private static final double FLYWHEEL_P = 0.0;
@@ -48,10 +47,10 @@ public class ShooterSubsystem implements Subsystem, UpdateManager.Updatable {
         hoodConfiguration.slot0.kD = HOOD_D;
         hoodConfiguration.feedbackNotContinuous = false;
         hoodConfiguration.primaryPID.selectedFeedbackSensor = FeedbackDevice.CTRE_MagEncoder_Absolute;
-        hoodConfiguration.primaryPID.selectedFeedbackCoefficient = HOOD_COEFFICIENT;
+        hoodConfiguration.primaryPID.selectedFeedbackCoefficient = HOOD_SENSOR_COEFFICIENT;
 
 
-        angleMotor.configAllSettings(hoodConfiguration, CAN_TIMEOUT_MS);
+        angleMotor.configAllSettings(hoodConfiguration);
     }
 
     public double getHoodAngle() {
