@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.frcteam2910.c2020.Constants;
+import org.frcteam2910.common.control.*;
 import org.frcteam2910.common.drivers.SwerveModule;
 import org.frcteam2910.common.kinematics.ChassisVelocity;
 import org.frcteam2910.common.kinematics.SwerveKinematics;
@@ -23,7 +24,11 @@ import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.UpdateManager;
 import org.frcteam2910.common.robot.drivers.Mk2SwerveModuleBuilder;
 import org.frcteam2910.common.robot.drivers.NavX;
+import org.frcteam2910.common.util.DrivetrainFeedforwardConstants;
 import org.frcteam2910.common.util.HolonomicDriveSignal;
+import org.frcteam2910.common.util.HolonomicFeedforward;
+
+import java.util.Optional;
 
 
 public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
@@ -32,6 +37,16 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     private static final double GEAR_REDUCTION = 190.0 / 27.0;
     private static final double WHEEL_DIAMETER = 4.0;
+    private static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = new DrivetrainFeedforwardConstants(
+            1.0 / (15.8 * 12.0),
+            0.0,
+            0.0
+    );
+
+    public static final TrajectoryConstraint[] TRAJECTORY_CONSTRAINTS = {
+            new FeedforwardConstraint(0.8, FEEDFORWARD_CONSTANTS.getVelocityConstant(), FEEDFORWARD_CONSTANTS.getAccelerationConstant()),
+            new MaxAccelerationConstraint(5.0 * 12.0)
+    };
 
     private final SwerveModule frontLeftModule =
             new Mk2SwerveModuleBuilder(new Vector2(TRACKWIDTH / 2.0, WHEELBASE / 2.0))
@@ -87,22 +102,31 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     private final SwerveModule[] modules = {frontLeftModule, frontRightModule, backLeftModule, backRightModule};
 
+    private final TrajectoryFollower<HolonomicDriveSignal> follower = new HolonomicMotionProfiledTrajectoryFollower(
+            new PidConstants(0.0075, 0.0, 0.0),
+            new PidConstants(0.02, 0.0, 0.0),
+            new HolonomicFeedforward(FEEDFORWARD_CONSTANTS)
+    );
+
     private final SwerveKinematics swerveKinematics = new SwerveKinematics(
             new Vector2(TRACKWIDTH / 2.0, WHEELBASE / 2.0),         //front left
             new Vector2(TRACKWIDTH / 2.0, -WHEELBASE / 2.0),        //front right
             new Vector2(-TRACKWIDTH / 2.0, WHEELBASE / 2.0),       //back left
             new Vector2(-TRACKWIDTH / 2.0, -WHEELBASE / 2.0)        //back right
     );
-
-    private final SwerveOdometry swerveOdometry = new SwerveOdometry(swerveKinematics, RigidTransform2.ZERO);
-
     private final Object sensorLock = new Object();
     @GuardedBy("sensorLock")
     private NavX navX = new NavX(SPI.Port.kMXP);
 
     private final Object kinematicsLock = new Object();
     @GuardedBy("kinematicsLock")
+    private final SwerveOdometry swerveOdometry = new SwerveOdometry(swerveKinematics, RigidTransform2.ZERO);
+    @GuardedBy("kinematicsLock")
     private RigidTransform2 pose = RigidTransform2.ZERO;
+    @GuardedBy("kinematicsLock")
+    private Vector2 velocity = Vector2.ZERO;
+    @GuardedBy("kinematicsLock")
+    private double angularVelocity = 0.0;
 
     private final Object stateLock = new Object();
     @GuardedBy("stateLock")
@@ -154,9 +178,28 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
     }
 
+    public Vector2 getVelocity() {
+        synchronized (kinematicsLock) {
+            return velocity;
+        }
+    }
+
+    public double getAngularVelocity() {
+        synchronized (kinematicsLock) {
+            return angularVelocity;
+        }
+    }
+
     public void drive(Vector2 translationalVelocity, double rotationalVelocity, boolean isFieldOriented) {
         synchronized (stateLock) {
             driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented);
+        }
+    }
+
+    public void resetPose(RigidTransform2 pose) {
+        synchronized (kinematicsLock) {
+            this.pose = pose;
+            swerveOdometry.resetPose(pose);
         }
     }
 
@@ -178,13 +221,18 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
 
         Rotation2 angle;
+        double angularVelocity;
         synchronized (sensorLock) {
             angle = navX.getAngle();
+            angularVelocity = navX.getRate();
         }
 
-        RigidTransform2 pose = swerveOdometry.update(angle, dt, moduleVelocities);
+        ChassisVelocity velocity = swerveKinematics.toChassisVelocity(moduleVelocities);
+
         synchronized (kinematicsLock) {
-            this.pose = pose;
+            this.pose = swerveOdometry.update(angle, dt, moduleVelocities);
+            this.velocity = velocity.getTranslationalVelocity();
+            this.angularVelocity = angularVelocity;
         }
     }
 
@@ -218,8 +266,19 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         updateOdometry(dt);
 
         HolonomicDriveSignal driveSignal;
-        synchronized (stateLock) {
-            driveSignal = this.driveSignal;
+        Optional<HolonomicDriveSignal> trajectorySignal = follower.update(
+                getPose(),
+                getVelocity(),
+                getAngularVelocity(),
+                time,
+                dt
+        );
+        if (trajectorySignal.isPresent()) {
+            driveSignal = trajectorySignal.get();
+        } else {
+            synchronized (stateLock) {
+                driveSignal = this.driveSignal;
+            }
         }
 
         updateModules(driveSignal, dt);
@@ -235,5 +294,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         for (int i = 0; i < modules.length; i++) {
             moduleAngleEntries[i].setDouble(Math.toDegrees(modules[i].getCurrentAngle()));
         }
+    }
+
+    public TrajectoryFollower<HolonomicDriveSignal> getFollower() {
+        return follower;
     }
 }
