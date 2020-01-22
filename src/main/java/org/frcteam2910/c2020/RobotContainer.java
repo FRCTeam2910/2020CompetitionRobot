@@ -25,6 +25,7 @@ public class RobotContainer {
         CommandScheduler.getInstance().registerSubsystem(feederSubsystem);
         CommandScheduler.getInstance().registerSubsystem(wheelOfFortuneSubsystem);
         CommandScheduler.getInstance().registerSubsystem(intakeSubsystem);
+        CommandScheduler.getInstance().registerSubsystem(climberSubsystem);
 
         configureButtonBindings();
     }
@@ -59,6 +60,10 @@ public class RobotContainer {
 
     public WheelOfFortuneSubsystem getWheelOfFortuneSubsystem(){
         return wheelOfFortuneSubsystem;
+    }
+
+    public ClimberSubsystem getClimberSubsystem(){
+        return climberSubsystem;
     }
 
 }
