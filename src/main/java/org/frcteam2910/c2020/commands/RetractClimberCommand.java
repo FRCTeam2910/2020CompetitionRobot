@@ -3,11 +3,11 @@ package org.frcteam2910.c2020.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.frcteam2910.c2020.subsystems.ClimberSubsystem;
 
-public class ExtendClimberCommand extends CommandBase {
+public class RetractClimberCommand extends CommandBase {
 
     private ClimberSubsystem climberSubsystem;
 
-    public ExtendClimberCommand(ClimberSubsystem climber){
+    public RetractClimberCommand(ClimberSubsystem climber){
         climberSubsystem = climber;
 
         addRequirements(climber);
@@ -15,7 +15,7 @@ public class ExtendClimberCommand extends CommandBase {
 
     @Override
     public void execute(){
-        climberSubsystem.extendClimber();
+        climberSubsystem.retractClimber();
     }
 
     @Override
