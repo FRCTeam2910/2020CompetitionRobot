@@ -7,8 +7,8 @@ import org.frcteam2910.common.robot.UpdateManager;
 
 public class ClimberSubsystem implements Subsystem, UpdateManager.Updatable {
 
-    private static final Solenoid deploySolenoid = new Solenoid(Constants.CLIMBER_DEPLOY_SOLENOID_PORT);
-    private static final Solenoid extendSolenoid = new Solenoid(Constants.CLIMBER_EXTEND_SOLENOID_PORT);
+    private final Solenoid deploySolenoid = new Solenoid(Constants.CLIMBER_DEPLOY_SOLENOID_PORT);
+    private final Solenoid extendSolenoid = new Solenoid(Constants.CLIMBER_EXTEND_SOLENOID_PORT);
 
     public void deployClimber(){
         deploySolenoid.set(false);
