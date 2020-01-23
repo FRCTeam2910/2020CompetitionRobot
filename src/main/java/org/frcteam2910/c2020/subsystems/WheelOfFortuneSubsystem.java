@@ -25,7 +25,7 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
     private static final double SPINNER_POSITION_COEFFICIENT = 0.0;
     private static final double SPINNER_INTEGRAL_COEFFICIENT = 0.0;
     private static final double SPINNER_DERIVATIVE_COEFFICIENT = 0.0;
-    private static final double SPINNER_COEFFICIENT = 0.0;
+    private static final double SENSOR_COEFFICIENT = 1.0;
 
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
     private final ColorSensorV3 COLOR_SENSOR = new ColorSensorV3(i2cPort);
@@ -41,8 +41,8 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
         spinnerConfig.slot0.kP = SPINNER_POSITION_COEFFICIENT;
         spinnerConfig.slot0.kI = SPINNER_INTEGRAL_COEFFICIENT;
         spinnerConfig.slot0.kD = SPINNER_DERIVATIVE_COEFFICIENT;
-        spinnerConfig.primaryPID.selectedFeedbackCoefficient = SPINNER_COEFFICIENT;
-        spinnerConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.CTRE_MagEncoder_Absolute;
+        spinnerConfig.primaryPID.selectedFeedbackCoefficient = SENSOR_COEFFICIENT;
+        spinnerConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.CTRE_MagEncoder_Relative;
 
         wheelSpinnerMotor.configAllSettings(spinnerConfig);
     }
