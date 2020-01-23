@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -38,14 +39,15 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private static final double GEAR_REDUCTION = 190.0 / 27.0;
     private static final double WHEEL_DIAMETER = 4.0;
     private static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = new DrivetrainFeedforwardConstants(
-            1.0 / (15.8 * 12.0),
-            0.0,
-            0.0
+            0.058,
+            0.00742,
+            0.615
     );
 
     public static final TrajectoryConstraint[] TRAJECTORY_CONSTRAINTS = {
-            new FeedforwardConstraint(0.8, FEEDFORWARD_CONSTANTS.getVelocityConstant(), FEEDFORWARD_CONSTANTS.getAccelerationConstant()),
-            new MaxAccelerationConstraint(5.0 * 12.0)
+            new FeedforwardConstraint(11.0, FEEDFORWARD_CONSTANTS.getVelocityConstant(), FEEDFORWARD_CONSTANTS.getAccelerationConstant(), false),
+            new MaxAccelerationConstraint(4.0 * 12.0),
+            new CentripetalAccelerationConstraint(30.0 * 12.0)
     };
 
     private final SwerveModule frontLeftModule =
@@ -68,7 +70,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                                     CANSparkMaxLowLevel.MotorType.kBrushless),
                             Mk2SwerveModuleBuilder.MotorType.NEO)
                     .driveMotor(
-                            new TalonFX(Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR),  GEAR_REDUCTION, WHEEL_DIAMETER)
+                            new TalonFX(Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR), GEAR_REDUCTION, WHEEL_DIAMETER)
                     .angleEncoder(
                             new AnalogInput(Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_PORT),
                             Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET)
@@ -103,8 +105,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private final SwerveModule[] modules = {frontLeftModule, frontRightModule, backLeftModule, backRightModule};
 
     private final TrajectoryFollower<HolonomicDriveSignal> follower = new HolonomicMotionProfiledTrajectoryFollower(
-            new PidConstants(0.0075, 0.0, 0.0),
-            new PidConstants(0.02, 0.0, 0.0),
+            new PidConstants(0.1, 0.0, 0.0),
+            new PidConstants(5.0, 0.0, 0.0),
             new HolonomicFeedforward(FEEDFORWARD_CONSTANTS)
     );
 
@@ -275,6 +277,11 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         );
         if (trajectorySignal.isPresent()) {
             driveSignal = trajectorySignal.get();
+            driveSignal = new HolonomicDriveSignal(
+                    driveSignal.getTranslation().scale(1.0 / RobotController.getBatteryVoltage()),
+                    driveSignal.getRotation() / RobotController.getBatteryVoltage(),
+                    driveSignal.isFieldOriented()
+            );
         } else {
             synchronized (stateLock) {
                 driveSignal = this.driveSignal;
