@@ -35,7 +35,7 @@ public class RobotContainer {
         primaryController.getBackButton().whenPressed(
                 () -> drivetrainSubsystem.resetGyroAngle(Rotation2.ZERO)
         );
-        primaryController.getLeftBumperButton().whileHeld(new IntakeCommand(intakeSubsystem, getIntakeMotorSpeed()));
+        primaryController.getLeftBumperButton().whileHeld(new IntakeCommand(intakeSubsystem, 0.5));
     }
 
     private Axis getDriveForwardAxis() {
@@ -56,10 +56,6 @@ public class RobotContainer {
 
     public FeederSubsystem getFeederSubsystem(){
         return feederSubsystem;
-    }
-
-    public double getIntakeMotorSpeed(){
-        return 0.5;
     }
 
     public IntakeSubsystem getIntakeSubsystem(){
