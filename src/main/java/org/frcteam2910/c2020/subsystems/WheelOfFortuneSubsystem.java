@@ -1,6 +1,8 @@
 package org.frcteam2910.c2020.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.ColorSensorV3;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -21,6 +23,7 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
     private final ColorSensorV3 COLOR_SENSOR = new ColorSensorV3(i2cPort);
 
+    private TalonSRX wheelSpinnerMotor = new TalonSRX(Constants.WHEEL_OF_FORTUNE_MOTOR_PORT);
 
     private DetectedColor detectedColor;
 
@@ -31,6 +34,10 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
         detectedColor = calculateDetectedColor(hueColor);
 
         SmartDashboard.putString("Color Detected", detectedColor.toString());
+    }
+
+    public void spinSpinner(double numRevolutions) {
+        wheelSpinnerMotor.set(ControlMode.Position, numRevolutions);
     }
 
 
