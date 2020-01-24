@@ -42,4 +42,7 @@ public class Constants {
 
     public static final int CLIMBER_DEPLOY_SOLENOID_PORT = 1;
     public static final int CLIMBER_EXTEND_SOLENOID_PORT = 2;
+
+    public static final int TOP_BREAKER_SENSOR_PORT = 1;
+    public static final int BOTTOM_BREAKER_SENSOR_PORT = 2;
 }
