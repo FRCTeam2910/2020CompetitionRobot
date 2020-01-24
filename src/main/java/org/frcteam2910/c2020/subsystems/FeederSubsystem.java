@@ -10,8 +10,8 @@ import org.frcteam2910.common.robot.UpdateManager;
 public class FeederSubsystem implements Subsystem, UpdateManager.Updatable {
 
     private TalonFX  motor  = new TalonFX(Constants.FEEDER_MOTOR_PORT);
-    private DigitalInput topBreakSensor = new DigitalInput(Constants.TOP_BREAKER_SENSOR_PORT);
-    private DigitalInput bottomBreakSensor = new DigitalInput(Constants.BOTTOM_BREAKER_SENSOR_PORT);
+    private DigitalInput fullSensor = new DigitalInput(Constants.FEEDER_IS_FULL_SENSOR_PORT);
+    private DigitalInput intakeBallSensor = new DigitalInput(Constants.FEEDER_INTAKE_BALL_SENSOR_PORT);
 
 
     public void spinMotor(double speed){
@@ -20,14 +20,14 @@ public class FeederSubsystem implements Subsystem, UpdateManager.Updatable {
     }
 
     public boolean isFull(){
-        return topBreakSensor.get();
+        return fullSensor.get();
     }
 
     public boolean shouldAdvance(){
         if(isFull()){
             return false;
         }
-        return bottomBreakSensor.get();
+        return intakeBallSensor.get();
     }
 
     @Override
