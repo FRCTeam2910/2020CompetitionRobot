@@ -1,6 +1,7 @@
 package org.frcteam2910.c2020;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.frcteam2910.c2020.commands.AutoRetractCommand;
 import org.frcteam2910.c2020.commands.DriveCommand;
 import org.frcteam2910.c2020.commands.IntakeCommand;
 import org.frcteam2910.c2020.subsystems.*;
@@ -25,7 +26,7 @@ public class RobotContainer {
         CommandScheduler.getInstance().setDefaultCommand(drivetrainSubsystem, new DriveCommand(drivetrainSubsystem, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis()));
         CommandScheduler.getInstance().registerSubsystem(feederSubsystem);
         CommandScheduler.getInstance().registerSubsystem(wheelOfFortuneSubsystem);
-        CommandScheduler.getInstance().registerSubsystem(intakeSubsystem);
+        CommandScheduler.getInstance().setDefaultCommand(intakeSubsystem, new AutoRetractCommand(intakeSubsystem, feederSubsystem));
         CommandScheduler.getInstance().registerSubsystem(climberSubsystem);
 
         configureButtonBindings();
