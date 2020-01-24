@@ -10,7 +10,10 @@ public class FeederSubsystem implements Subsystem, UpdateManager.Updatable {
 
     private TalonFX  motor  = new TalonFX(Constants.FEEDER_MOTOR_PORT);
 
-
+    public boolean isFull(){
+        // dummy value until #31 is fixed
+        return false;
+    }
 
     public void spinMotor(double speed){
 
@@ -19,8 +22,6 @@ public class FeederSubsystem implements Subsystem, UpdateManager.Updatable {
 
     @Override
     public void update(double time, double dt){
-
-
 
     }
 
