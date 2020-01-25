@@ -10,13 +10,14 @@ import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.drivers.Limelight;
 
 public class VisionRotateToTargetCommand extends CommandBase {
-    private final DrivetrainSubsystem drivetrain;
     private static final PidConstants PID_CONSTANTS = new PidConstants(0.0, 0.0, 0.0);
-    private static final String limelightName = "LIMELIGHT";
+    private static final String LIMELIGHT_NAME = "limelight";
+    private static final Limelight LIMELIGHT = new Limelight(NetworkTableInstance.getDefault().getTable(LIMELIGHT_NAME));
+
+
+    private final DrivetrainSubsystem drivetrain;
     private PidController controller = new PidController(PID_CONSTANTS);
     private double lastTime = 0.0;
-
-    private static final Limelight limelight = new Limelight(NetworkTableInstance.getDefault().getTable(limelightName));
 
     public VisionRotateToTargetCommand(DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
@@ -27,7 +28,8 @@ public class VisionRotateToTargetCommand extends CommandBase {
     @Override
     public void initialize() {
         lastTime = Timer.getFPGATimestamp();
-        limelight.setCamMode(Limelight.CamMode.VISION);
+        LIMELIGHT.setCamMode(Limelight.CamMode.VISION);
+        controller.reset();
     }
 
     @Override
@@ -36,9 +38,9 @@ public class VisionRotateToTargetCommand extends CommandBase {
         double dt = time - lastTime;
         lastTime = time;
 
-        if(limelight.hasTarget()) {
+        if(LIMELIGHT.hasTarget()) {
             double currentAngle = drivetrain.getPose().rotation.toRadians();
-            double targetAngle = drivetrain.getPoseAtTime(time - limelight.getPipelineLatency() * 1000.0).rotation.toRadians() - limelight.getTargetPosition().x;
+            double targetAngle = drivetrain.getPoseAtTime(time - LIMELIGHT.getPipelineLatency() / 1000.0).rotation.toRadians() - LIMELIGHT.getTargetPosition().x;
             controller.setSetpoint(targetAngle);
             double rotationalVelocity = controller.calculate(currentAngle, dt);
             drivetrain.drive(Vector2.ZERO, rotationalVelocity, false);
