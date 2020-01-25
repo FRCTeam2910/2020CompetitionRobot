@@ -40,7 +40,7 @@ public class VisionCommand extends CommandBase {
 
         if(limelight.hasTarget()) {
             double currentAngle = drivetrain.getPose().rotation.toRadians();
-            double targetAngle = currentAngle - limelight.getTargetPosition().x;
+            double targetAngle = drivetrain.getPoseAtTime(time - limelight.getPipelineLatency() * 1000.0).rotation.toRadians() - limelight.getTargetPosition().x;
             controller.setSetpoint(targetAngle);
             double rotationalVelocity = controller.calculate(currentAngle, dt);
             drivetrain.drive(Vector2.ZERO, rotationalVelocity, false);
