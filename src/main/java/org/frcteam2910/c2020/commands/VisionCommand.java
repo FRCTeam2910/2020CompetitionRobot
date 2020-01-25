@@ -36,18 +36,14 @@ public class VisionCommand extends CommandBase {
     public void execute() {
         double time = Timer.getFPGATimestamp();
         double dt = time - lastTime;
-
+        lastTime = time;
 
         if(limelight.hasTarget()) {
-            double angle = limelight.getTargetPosition().x;
-            controller.setSetpoint(angle);
-            double rotationalVelocity = controller.calculate(time, dt);
+            double currentAngle = drivetrain.getPose().rotation.toRadians();
+            double targetAngle = currentAngle - limelight.getTargetPosition().x;
+            controller.setSetpoint(targetAngle);
+            double rotationalVelocity = controller.calculate(currentAngle, dt);
             drivetrain.drive(Vector2.ZERO, rotationalVelocity, false);
         }
-    }
-
-    @Override
-    public boolean isFinished() {
-        return limelight.getTargetPosition().x == 0;
     }
 }
