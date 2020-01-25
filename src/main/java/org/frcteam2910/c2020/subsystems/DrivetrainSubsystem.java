@@ -75,7 +75,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                                     CANSparkMaxLowLevel.MotorType.kBrushless),
                             Mk2SwerveModuleBuilder.MotorType.NEO)
                     .driveMotor(
-                            new TalonFX(Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR),  GEAR_REDUCTION, WHEEL_DIAMETER)
+                            new TalonFX(Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR), GEAR_REDUCTION, WHEEL_DIAMETER)
                     .angleEncoder(
                             new AnalogInput(Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_PORT),
                             Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET)
@@ -240,12 +240,11 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         ChassisVelocity velocity = swerveKinematics.toChassisVelocity(moduleVelocities);
 
         synchronized (kinematicsLock) {
-            this.pose = pose;
+            this.pose = swerveOdometry.update(angle, dt, moduleVelocities);
             if (latencyCompensationMap.size() > MAX_LATENCY_COMPENSATION_MAP_ENTRIES) {
                 latencyCompensationMap.remove(latencyCompensationMap.firstKey());
             }
             latencyCompensationMap.put(new InterpolatingDouble(time), pose);
-            this.pose = swerveOdometry.update(angle, dt, moduleVelocities);
             this.velocity = velocity.getTranslationalVelocity();
             this.angularVelocity = angularVelocity;
         }
