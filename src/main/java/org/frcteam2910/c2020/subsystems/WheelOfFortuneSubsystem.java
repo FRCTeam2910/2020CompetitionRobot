@@ -1,10 +1,12 @@
 package org.frcteam2910.c2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
 import com.revrobotics.ColorSensorV3;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -30,21 +32,22 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
     private final ColorSensorV3 COLOR_SENSOR = new ColorSensorV3(i2cPort);
 
-    private TalonSRX wheelSpinnerMotor = new TalonSRX(Constants.WHEEL_OF_FORTUNE_MOTOR_PORT);
+    private CANSparkMax wheelSpinnerController = new CANSparkMax(Constants.WHEEL_OF_FORTUNE_MOTOR_PORT, MotorType.kBrushless);
+
+    private CANEncoder sparkMaxEncoder;
+    private CANPIDController spinnerPidController;
 
     private DetectedColor detectedColor;
 
     public WheelOfFortuneSubsystem(){
-        super();
+        sparkMaxEncoder =  wheelSpinnerController.getEncoder();
+        sparkMaxEncoder.setPositionConversionFactor(SENSOR_COEFFICIENT);
 
-        TalonSRXConfiguration spinnerConfig = new TalonSRXConfiguration();
-        spinnerConfig.slot0.kP = SPINNER_POSITION_COEFFICIENT;
-        spinnerConfig.slot0.kI = SPINNER_INTEGRAL_COEFFICIENT;
-        spinnerConfig.slot0.kD = SPINNER_DERIVATIVE_COEFFICIENT;
-        spinnerConfig.primaryPID.selectedFeedbackCoefficient = SENSOR_COEFFICIENT;
-        spinnerConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.CTRE_MagEncoder_Relative;
+        spinnerPidController = wheelSpinnerController.getPIDController();
+        spinnerPidController.setP(SPINNER_POSITION_COEFFICIENT);
+        spinnerPidController.setI(SPINNER_INTEGRAL_COEFFICIENT);
+        spinnerPidController.setD(SPINNER_DERIVATIVE_COEFFICIENT);
 
-        wheelSpinnerMotor.configAllSettings(spinnerConfig);
     }
 
     @Override
@@ -57,7 +60,7 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
     }
 
     public void spinSpinner(double numRevolutions) {
-        wheelSpinnerMotor.set(ControlMode.Position, numRevolutions);
+        spinnerPidController.setReference(numRevolutions, ControlType.kPosition);
     }
 
 
