@@ -22,11 +22,11 @@ public class FeederSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public FeederSubsystem() {
         ShuffleboardTab tab = Shuffleboard.getTab("Feeder");
-        fullEntry = tab.add("Is feeder full", 0.0)
+        fullEntry = tab.add("Is feeder full", false)
                 .withPosition(0, 0)
                 .withSize(1, 1)
                 .getEntry();
-        hasBallEntry = tab.add("Does shooter have ball", 0.0)
+        hasBallEntry = tab.add("Does shooter have ball", false)
                 .withPosition(0, 1)
                 .withSize(1, 1)
                 .getEntry();
