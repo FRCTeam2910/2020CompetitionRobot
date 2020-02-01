@@ -18,6 +18,8 @@ public class FeederIntakeWhenNotFullCommand extends CommandBase {
     public void execute() {
         if(feederSubsystem.shouldAdvance()) {
             feederSubsystem.spinMotor(speed);
+        } else {
+            feederSubsystem.spinMotor(0.0);
         }
     }
 
