@@ -136,7 +136,6 @@ public class ShooterSubsystem implements Subsystem, UpdateManager.Updatable {
     }
 
     public void shootFlywheel(double speed) {
-//        double feedforward = FLYWHEEL_FEEDFORWARD_MAP.getInterpolated(new InterpolatingDouble(speed)).value * speed;
         double feedforward = calculateFlywheelFeedforward(speed) * speed;
 
         flywheelMotor1.set(ControlMode.Velocity, -speed / FLYWHEEL_VELOCITY_SENSOR_COEFFICIENT, DemandType.ArbitraryFeedForward, -feedforward);
