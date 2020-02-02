@@ -71,7 +71,7 @@ public class ShooterSubsystem implements Subsystem, UpdateManager.Updatable {
         flyWheelConfiguration.slot0.kI = FLYWHEEL_I;
         flyWheelConfiguration.slot0.kD = FLYWHEEL_D;
         flyWheelConfiguration.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice();
-        flyWheelConfiguration.supplyCurrLimit.currentLimit = 80.0;
+        flyWheelConfiguration.supplyCurrLimit.currentLimit = 40.0;
         flyWheelConfiguration.supplyCurrLimit.enable = true;
         flyWheelConfiguration.voltageCompSaturation = 11.5;
 
