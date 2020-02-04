@@ -48,7 +48,9 @@ public class RobotContainer {
         primaryController.getLeftBumperButton().whileHeld(new IntakeCommand(intakeSubsystem, feederSubsystem, 0.5));
 
         primaryController.getRightTriggerAxis().getButton(0.1).whileHeld(new FeedBallsToShooterCommand(feederSubsystem));
-        primaryController.getRightBumperButton().whileHeld(new TargetWithShooterCommand(shooterSubsystem, primaryController));
+        primaryController.getRightBumperButton().whileHeld(
+                new TargetWithShooterCommand(shooterSubsystem, primaryController).alongWith(new VisionRotateToTargetCommand(drivetrainSubsystem))
+        );
 
         secondaryController.getXButton().whenPressed(new DeployClimberCommand(climberSubsystem));
         secondaryController.getYButton().whenPressed(new ConditionalCommand(
