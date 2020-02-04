@@ -2,9 +2,7 @@ package org.frcteam2910.c2020;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import org.frcteam2910.c2020.commands.CharacterizeFlywheelCommand;
 import org.frcteam2910.c2020.commands.SpinFlywheelCommand;
 import org.frcteam2910.common.math.RigidTransform2;
 import org.frcteam2910.common.math.Rotation2;
