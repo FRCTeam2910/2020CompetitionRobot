@@ -12,7 +12,7 @@ public class TargetWithShooterCommand extends CommandBase {
 
     //TODO: Make this use vision
     private static final double TARGET_ANGLE = 45;
-    private static final double TARGET_SPEED = 0.5;
+    private static final double TARGET_SPEED = 2500;
 
     private static final double MAXIMUM_ALLOWABLE_ANGLE_RANGE = Math.toRadians(3);
     private static final double MAXIMUM_ALLOWABLE_VELOCITY_RANGE = 50;
@@ -26,8 +26,8 @@ public class TargetWithShooterCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        shooterSubsystem.shootFlywheel(2500.0);
-        shooterSubsystem.setHoodTargetAngle(45);
+        shooterSubsystem.shootFlywheel(TARGET_SPEED);
+        shooterSubsystem.setHoodTargetAngle(TARGET_ANGLE);
     }
 
     @Override
