@@ -2,7 +2,6 @@ package org.frcteam2910.c2020.subsystems;
 
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.EncoderType;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANEncoder;
@@ -32,22 +31,19 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
     private final ColorSensorV3 COLOR_SENSOR = new ColorSensorV3(i2cPort);
 
-    private CANSparkMax wheelSpinnerController = new CANSparkMax(Constants.WHEEL_OF_FORTUNE_MOTOR_PORT, MotorType.kBrushless);
+    private CANSparkMax motor = new CANSparkMax(Constants.WHEEL_OF_FORTUNE_MOTOR_PORT, MotorType.kBrushless);
 
-    private CANEncoder sparkMaxEncoder;
-    private CANPIDController spinnerPidController;
+    private CANEncoder sparkMaxEncoder =  motor.getEncoder();
+    private CANPIDController pidController = motor.getPIDController();
 
     private DetectedColor detectedColor;
 
     public WheelOfFortuneSubsystem(){
-        sparkMaxEncoder =  wheelSpinnerController.getEncoder();
         sparkMaxEncoder.setPositionConversionFactor(SENSOR_COEFFICIENT);
 
-        spinnerPidController = wheelSpinnerController.getPIDController();
-        spinnerPidController.setP(SPINNER_POSITION_COEFFICIENT);
-        spinnerPidController.setI(SPINNER_INTEGRAL_COEFFICIENT);
-        spinnerPidController.setD(SPINNER_DERIVATIVE_COEFFICIENT);
-
+        pidController.setP(SPINNER_POSITION_COEFFICIENT);
+        pidController.setI(SPINNER_INTEGRAL_COEFFICIENT);
+        pidController.setD(SPINNER_DERIVATIVE_COEFFICIENT);
     }
 
     @Override
@@ -59,8 +55,8 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
         SmartDashboard.putString("Color Detected", detectedColor.toString());
     }
 
-    public void spinSpinner(double numRevolutions) {
-        spinnerPidController.setReference(numRevolutions, ControlType.kPosition);
+    public void spin(double numRevolutions) {
+        pidController.setReference(numRevolutions, ControlType.kPosition);
     }
 
 
