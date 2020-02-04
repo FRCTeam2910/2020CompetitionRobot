@@ -3,6 +3,7 @@ package org.frcteam2910.c2020.commands;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.frcteam2910.c2020.subsystems.ShooterSubsystem;
+import org.frcteam2910.common.math.MathUtils;
 import org.frcteam2910.common.robot.input.XboxController;
 
 public class TargetWithShooterCommand extends CommandBase {
@@ -11,7 +12,10 @@ public class TargetWithShooterCommand extends CommandBase {
 
     //TODO: Make this use vision
     private static final double TARGET_ANGLE = 45;
-    private static final double TARGET_SPEED = 1.0;
+    private static final double TARGET_SPEED = 0.5;
+
+    private static final double MAXIMUM_ALLOWABLE_ANGLE_RANGE = Math.toRadians(3);
+    private static final double MAXIMUM_ALLOWABLE_VELOCITY_RANGE = 50;
 
     public TargetWithShooterCommand(ShooterSubsystem shooterSubsystem, XboxController primaryController) {
         this.shooterSubsystem = shooterSubsystem;
@@ -28,7 +32,7 @@ public class TargetWithShooterCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if(shooterSubsystem.getFlywheelVelocity() == TARGET_SPEED && shooterSubsystem.getHoodAngle() == TARGET_ANGLE) {
+        if(MathUtils.epsilonEquals(shooterSubsystem.getFlywheelVelocity(),  TARGET_SPEED, MAXIMUM_ALLOWABLE_VELOCITY_RANGE) && MathUtils.epsilonEquals(shooterSubsystem.getHoodAngle(), TARGET_ANGLE, MAXIMUM_ALLOWABLE_ANGLE_RANGE)) {
             primaryController.getRawJoystick().setRumble(GenericHID.RumbleType.kRightRumble, 1.0);
         } else {
             primaryController.getRawJoystick().setRumble(GenericHID.RumbleType.kRightRumble, 0.0);
