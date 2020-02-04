@@ -33,13 +33,13 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
 
     private CANSparkMax motor = new CANSparkMax(Constants.WHEEL_OF_FORTUNE_MOTOR_PORT, MotorType.kBrushless);
 
-    private CANEncoder sparkMaxEncoder =  motor.getEncoder();
+    private CANEncoder encoder =  motor.getEncoder();
     private CANPIDController pidController = motor.getPIDController();
 
     private DetectedColor detectedColor;
 
     public WheelOfFortuneSubsystem(){
-        sparkMaxEncoder.setPositionConversionFactor(SENSOR_COEFFICIENT);
+        encoder.setPositionConversionFactor(SENSOR_COEFFICIENT);
 
         pidController.setP(SPINNER_POSITION_COEFFICIENT);
         pidController.setI(SPINNER_INTEGRAL_COEFFICIENT);
