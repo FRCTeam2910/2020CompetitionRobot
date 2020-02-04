@@ -11,7 +11,7 @@ public class TargetWithShooterCommand extends CommandBase {
     private final XboxController primaryController;
 
     //TODO: Make this use vision
-    private static final double TARGET_ANGLE = 45;
+    private static final double TARGET_ANGLE = Math.toRadians(45);
     private static final double TARGET_SPEED = 2500;
 
     private static final double MAXIMUM_ALLOWABLE_ANGLE_RANGE = Math.toRadians(3);
