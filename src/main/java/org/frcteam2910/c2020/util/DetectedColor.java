@@ -1,12 +1,14 @@
 package org.frcteam2910.c2020.util;
 
+import com.google.protobuf.UninitializedMessageException;
+
 public enum DetectedColor {
 
     RED, YELLOW, BLUE, GREEN;
 
     //Based on which color the robot is detecting, the color the field sensor is detecting will be the same
     //regardless of which side of the control panel the robot is facing.
-    public DetectedColor getColorOnFieldSensor() {
+    public DetectedColor getColorOnFieldSensor() throws UnsupportedOperationException {
         switch (this) {
             case RED:
                 return BLUE;
@@ -14,12 +16,14 @@ public enum DetectedColor {
                 return GREEN;
             case BLUE:
                 return RED;
-            default: //GREEN
+            case GREEN:
                 return YELLOW;
+            default:
+                throw new UnsupportedOperationException("Unknown color");
         }
     }
 
-    private DetectedColor getAdjacentColor(boolean clockwise) {
+    private DetectedColor getAdjacentColor(boolean clockwise) throws UnsupportedOperationException {
         switch (this) {
             case RED:
                 return clockwise ? YELLOW : GREEN;
@@ -27,8 +31,10 @@ public enum DetectedColor {
                 return clockwise ? BLUE : RED;
             case BLUE:
                 return clockwise ? GREEN : YELLOW;
-            default: //GREEN
+            case GREEN:
                 return clockwise ? RED : BLUE;
+            default:
+                throw new UnsupportedOperationException("Unknown color");
         }
     }
 
@@ -48,20 +54,18 @@ public enum DetectedColor {
     }
     // 1 = 1 section away in the clockwise direction; -1 = 1 direction away counterclockwise
 
-    public static DetectedColor convertGameMessageToColor(String gameMessage) {
-        if (gameMessage.length() > 0) {
-            switch (gameMessage.charAt(0)) {
-                case 'R':
-                    return RED;
-                case 'Y':
-                    return YELLOW;
-                case 'B':
-                    return BLUE;
-                case 'G':
-                    return GREEN;
-            }
+    public static DetectedColor convertGameMessageToColor(String gameMessage) throws IllegalArgumentException {
+        switch (gameMessage.charAt(0)) {
+            case 'R':
+                return RED;
+            case 'Y':
+                return YELLOW;
+            case 'B':
+                return BLUE;
+            case 'G':
+                return GREEN;
+            default:
+                throw new IllegalArgumentException("Game message is invalid (not one of the 4 colors)");
         }
-
-        return null;
     }
 }
