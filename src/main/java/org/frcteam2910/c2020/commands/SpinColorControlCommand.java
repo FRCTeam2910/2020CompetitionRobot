@@ -21,11 +21,10 @@ public class SpinColorControlCommand extends CommandBase {
     public void initialize() {
         DetectedColor currentRobotColor = spinner.getDetectedColor();
         DetectedColor fieldSensorColor = currentRobotColor.getColorOnFieldSensor();
-        if (fieldSensorColor != null) {
-            int numSections = fieldSensorColor.findNumSectionsAwayFromColor(desiredColor);
-            spinner.resetEncoderPosition();
-            spinner.spin(numSections * SPINNER_REVOLUTIONS_PER_WHEEL_SECTION);
-        }
+
+        int numSections = fieldSensorColor.findNumSectionsAwayFromColor(desiredColor);
+        spinner.resetEncoderPosition();
+        spinner.spin(numSections * SPINNER_REVOLUTIONS_PER_WHEEL_SECTION);
     }
 
     @Override
