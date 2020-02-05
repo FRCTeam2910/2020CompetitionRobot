@@ -1,7 +1,5 @@
 package org.frcteam2910.c2020.util;
 
-import com.google.protobuf.UninitializedMessageException;
-
 public enum DetectedColor {
 
     RED, YELLOW, BLUE, GREEN;
