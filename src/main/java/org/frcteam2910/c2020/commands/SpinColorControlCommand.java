@@ -7,12 +7,13 @@ import org.frcteam2910.c2020.util.DetectedColor;
 
 import static org.frcteam2910.c2020.subsystems.WheelOfFortuneSubsystem.SPINNER_REVOLUTIONS_PER_WHEEL_SECTION;
 
-public class SpinPositionControlCommand extends CommandBase {
+public class SpinColorControlCommand extends CommandBase {
     private WheelOfFortuneSubsystem spinner;
     private DetectedColor desiredColor;
 
-    public SpinPositionControlCommand(WheelOfFortuneSubsystem wheelOfFortuneSpinner) {
+    public SpinColorControlCommand(WheelOfFortuneSubsystem wheelOfFortuneSpinner) {
         spinner = wheelOfFortuneSpinner;
+        addRequirements(spinner);
         desiredColor = DetectedColor.convertGameMessageToColor(DriverStation.getInstance().getGameSpecificMessage());
     }
 
@@ -22,7 +23,7 @@ public class SpinPositionControlCommand extends CommandBase {
         DetectedColor fieldSensorColor = currentRobotColor.getColorOnFieldSensor();
         if (fieldSensorColor != null) {
             int numSections = fieldSensorColor.findNumSectionsAwayFromColor(desiredColor);
-            spinner.getEncoder().setPosition(0.0);
+            spinner.resetEncoderPosition();
             spinner.spin(numSections * SPINNER_REVOLUTIONS_PER_WHEEL_SECTION);
         }
     }

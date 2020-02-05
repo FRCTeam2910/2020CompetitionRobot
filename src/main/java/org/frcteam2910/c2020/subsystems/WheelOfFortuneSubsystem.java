@@ -74,8 +74,12 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
         motor.stopMotor();
     }
 
-    public CANEncoder getEncoder() {
-        return encoder;
+    public void resetEncoderPosition() {
+        encoder.setPosition(0.0);
+    }
+
+    public double getEncoderPosition() {
+        return encoder.getPosition();
     }
 
     private double calculateHue(Color colorFromSensor){

@@ -14,10 +14,8 @@ public enum DetectedColor {
                 return GREEN;
             case BLUE:
                 return RED;
-            case GREEN:
+            default: //GREEN
                 return YELLOW;
-            default:
-                return null;
         }
     }
 
@@ -29,10 +27,8 @@ public enum DetectedColor {
                 return clockwise ? BLUE : RED;
             case BLUE:
                 return clockwise ? GREEN : YELLOW;
-            case GREEN:
+            default: //GREEN
                 return clockwise ? RED : BLUE;
-            default:
-                return null;
         }
     }
 
@@ -63,12 +59,9 @@ public enum DetectedColor {
                     return BLUE;
                 case 'G':
                     return GREEN;
-                default:
-                    return null;
             }
         }
-        else {
-            return null;
-        }
+
+        return null;
     }
 }
