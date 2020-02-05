@@ -68,6 +68,13 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
         pidController.setReference(numRevolutions, ControlType.kPosition);
     }
 
+    public void stopMotor() {
+        motor.stopMotor();
+    }
+
+    public CANEncoder getEncoder() {
+        return encoder;
+    }
 
     private double calculateHue(Color colorFromSensor){
 
