@@ -41,7 +41,7 @@ public class WheelOfFortuneSubsystem implements Subsystem, UpdateManager.Updatab
     private CANEncoder encoder =  motor.getEncoder();
     private CANPIDController pidController = motor.getPIDController();
 
-    private Solenoid deploySolenoid = new Solenoid(Constants.WHEEL_OF_FORTUNE_PNEUMATIC_PORT);
+    private Solenoid deploySolenoid = new Solenoid(Constants.WHEEL_OF_FORTUNE_DEPLOY_SOLENOID_PORT);
 
     private DetectedColor detectedColor;
     private final NetworkTableEntry colorEntry;
