@@ -14,17 +14,21 @@ public class SpinColorControlCommand extends CommandBase {
     public SpinColorControlCommand(WheelOfFortuneSubsystem wheelOfFortuneSpinner) {
         spinner = wheelOfFortuneSpinner;
         addRequirements(spinner);
-        desiredColor = DetectedColor.convertGameMessageToColor(DriverStation.getInstance().getGameSpecificMessage());
     }
 
     @Override
     public void initialize() {
-        DetectedColor currentRobotColor = spinner.getDetectedColor();
-        DetectedColor fieldSensorColor = currentRobotColor.getColorOnFieldSensor();
+        String gameMessage = DriverStation.getInstance().getGameSpecificMessage();
+        if (gameMessage.length() > 0) {
+            desiredColor = DetectedColor.convertGameMessageToColor(gameMessage);
 
-        int numSections = fieldSensorColor.findNumSectionsAwayFromColor(desiredColor);
-        spinner.resetEncoderPosition();
-        spinner.spin(numSections * SPINNER_REVOLUTIONS_PER_WHEEL_SECTION);
+            DetectedColor currentRobotColor = spinner.getDetectedColor();
+            DetectedColor fieldSensorColor = currentRobotColor.getColorOnFieldSensor();
+
+            int numSections = fieldSensorColor.findNumSectionsAwayFromColor(desiredColor);
+            spinner.resetEncoderPosition();
+            spinner.spin(numSections * SPINNER_REVOLUTIONS_PER_WHEEL_SECTION);
+        }
     }
 
     @Override
