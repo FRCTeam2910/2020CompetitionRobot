@@ -238,6 +238,17 @@ public class ShooterSubsystem implements Subsystem, UpdateManager.Updatable {
         hoodTargetPosition = OptionalDouble.empty();
     }
 
+    public boolean isHoodAtTargetAngle() {
+        OptionalDouble targetAngle = getHoodTargetAngle();
+        double currentAngle = getHoodAngle();
+
+        if (targetAngle.isEmpty()) {
+            return false;
+        }
+
+        return MathUtils.epsilonEquals(targetAngle.getAsDouble(), currentAngle, Math.toRadians(1.5));
+    }
+
     public enum HoodControlMode {
         DISABLED,
         POSITION

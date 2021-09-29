@@ -42,6 +42,8 @@ public class AutonomousTrajectories {
     private final Trajectory eightBallCompatiblePartTwo;
     private final Trajectory eightBallCompatiblePartThree;
 
+    private final Trajectory simpleShootThree;
+
     public AutonomousTrajectories(TrajectoryConstraint[] trajectoryConstraints) throws IOException {
         TrajectoryConstraint[] slowConstraints = Arrays.copyOf(trajectoryConstraints, trajectoryConstraints.length + 1);
         slowConstraints[slowConstraints.length - 1] = new MaxVelocityConstraint(6.0 * 12.0);
@@ -90,6 +92,13 @@ public class AutonomousTrajectories {
         eightBallCompatiblePartOne = new Trajectory(EIGHT_BALL_COMPATIBLE_PART_ONE, trajectoryConstraints, SAMPLE_DISTANCE);
         eightBallCompatiblePartTwo = new Trajectory(EIGHT_BALL_COMPATIBLE_PART_TWO, slowConstraints, SAMPLE_DISTANCE);
         eightBallCompatiblePartThree = new Trajectory(EIGHT_BALL_COMPATIBLE_PART_THREE, trajectoryConstraints, SAMPLE_DISTANCE);
+
+        simpleShootThree = new Trajectory(
+                new SimplePathBuilder(Vector2.ZERO, Rotation2.ZERO)
+                        .lineTo(new Vector2(40.0, 0.0))
+                        .build(),
+                trajectoryConstraints, SAMPLE_DISTANCE
+        );
     }
 
     private Path getPath(String name) throws IOException {
@@ -142,4 +151,6 @@ public class AutonomousTrajectories {
     public Trajectory getEightBallCompatiblePartThree() {
         return eightBallCompatiblePartThree;
     }
+
+    public Trajectory getSimpleShootThree() { return simpleShootThree; }
 }

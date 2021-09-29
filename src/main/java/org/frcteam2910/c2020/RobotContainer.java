@@ -25,7 +25,7 @@ public class RobotContainer {
 
     private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
     private final FeederSubsystem feederSubsystem = new FeederSubsystem();
-//    private final WheelOfFortuneSubsystem wheelOfFortuneSubsystem = new WheelOfFortuneSubsystem();
+    private final WheelOfFortuneSubsystem wheelOfFortuneSubsystem = new WheelOfFortuneSubsystem();
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
@@ -47,7 +47,7 @@ public class RobotContainer {
 
         CommandScheduler.getInstance().setDefaultCommand(drivetrainSubsystem, new DriveCommand(drivetrainSubsystem, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis()));
         CommandScheduler.getInstance().setDefaultCommand(feederSubsystem, new FeederIntakeWhenNotFullCommand(feederSubsystem, 1.0));
-//        CommandScheduler.getInstance().setDefaultCommand(wheelOfFortuneSubsystem, new ManualWheelOfFortuneCommand(wheelOfFortuneSubsystem, () -> Utilities.deadband(secondaryController.getRightXAxis().get(), 0.1)));
+        CommandScheduler.getInstance().setDefaultCommand(wheelOfFortuneSubsystem, new ManualWheelOfFortuneCommand(wheelOfFortuneSubsystem, () -> Utilities.deadband(secondaryController.getRightXAxis().get(), 0.1) * 0.5));
         CommandScheduler.getInstance().registerSubsystem(climberSubsystem);
         CommandScheduler.getInstance().registerSubsystem(intakeSubsystem);
         CommandScheduler.getInstance().setDefaultCommand(shooterSubsystem, new DefaultShooterCommand(shooterSubsystem, 4500.0, Constants.SHOOTER_HOOD_MAX_ANGLE));
@@ -78,7 +78,9 @@ public class RobotContainer {
 
         primaryController.getRightTriggerAxis().getButton(0.5).whileHeld(new FeedBallsToShooterCommand(feederSubsystem, shooterSubsystem));
         primaryController.getRightBumperButton().whileHeld(
-                new TargetWithShooterCommand(shooterSubsystem, visionSubsystem, primaryController).alongWith(new VisionRotateToTargetCommand(drivetrainSubsystem, visionSubsystem, () -> getDriveForwardAxis().get(true), () -> getDriveStrafeAxis().get(true)))
+                new TargetWithShooterCommand(shooterSubsystem, visionSubsystem, primaryController)
+                        .alongWith(new VisionRotateToTargetCommand(drivetrainSubsystem, visionSubsystem, () -> getDriveForwardAxis().get(true), () -> getDriveStrafeAxis().get(true)))
+                        .alongWith(new AutoFeedCommand(drivetrainSubsystem, feederSubsystem, shooterSubsystem, visionSubsystem))
         );
 
         primaryController.getAButton().whenPressed(
@@ -113,8 +115,8 @@ public class RobotContainer {
         secondaryController.getLeftBumperButton().whileHeld(new WaitCommand(0.5).andThen(new IntakeCommand(intakeSubsystem, feederSubsystem, 1.0)));
         secondaryController.getLeftBumperButton().whenReleased(() -> intakeSubsystem.setExtended(false));
 
-//        secondaryController.getRightBumperButton().whenPressed(wheelOfFortuneSubsystem::extendSolenoid);
-//        secondaryController.getRightBumperButton().whenReleased(wheelOfFortuneSubsystem::retractSolenoid);
+        secondaryController.getRightBumperButton().whenPressed(wheelOfFortuneSubsystem::extendSolenoid);
+        secondaryController.getRightBumperButton().whenReleased(wheelOfFortuneSubsystem::retractSolenoid);
 
         secondaryController.getBackButton().whenPressed(new DeployClimberCommand(climberSubsystem));
         secondaryController.getStartButton().whenPressed(new ConditionalCommand(

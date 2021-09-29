@@ -26,6 +26,7 @@ public class AutonomousChooser {
         autonomousModeChooser.addOption("8 Ball Compatible", AutonomousMode.EIGHT_BALL_COMPATIBLE);
         autonomousModeChooser.addOption("10 Ball Auto", AutonomousMode.TEN_BALL);
         autonomousModeChooser.addOption("Circuit 10 Ball Auto", AutonomousMode.TEN_BALL_CIRCUIT);
+        autonomousModeChooser.addOption("Simple Shoot Three", AutonomousMode.SIMPLE_SHOOT_THREE);
         autoTab.add("Mode", autonomousModeChooser)
         .withSize(3, 1);
     }
@@ -98,6 +99,17 @@ public class AutonomousChooser {
         return command;
     }
 
+    public Command getSimpleShootThreeAutoCommand(RobotContainer container) {
+        SequentialCommandGroup command = new SequentialCommandGroup();
+
+        resetRobotPose(command, container, trajectories.getSimpleShootThree());
+
+        shootAtTarget(command, container);
+        follow(command, container, trajectories.getSimpleShootThree());
+
+        return command;
+    }
+
     public Command getCommand(RobotContainer container) {
         switch (autonomousModeChooser.getSelected()) {
             case EIGHT_BALL:
@@ -108,6 +120,8 @@ public class AutonomousChooser {
                 return get10BallAutoCommand(container);
             case TEN_BALL_CIRCUIT:
                 return getCircuit10BallAutoCommand(container);
+            case SIMPLE_SHOOT_THREE:
+                return getSimpleShootThreeAutoCommand(container);
         }
 
         return get10BallAutoCommand(container);
@@ -156,6 +170,7 @@ public class AutonomousChooser {
         EIGHT_BALL,
         EIGHT_BALL_COMPATIBLE,
         TEN_BALL,
-        TEN_BALL_CIRCUIT
+        TEN_BALL_CIRCUIT,
+        SIMPLE_SHOOT_THREE,
     }
 }
