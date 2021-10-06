@@ -92,7 +92,7 @@ public class ShooterSubsystem implements Subsystem, UpdateManager.Updatable {
 
         angleMotor.configAllSettings(hoodConfiguration);
         angleMotor.setNeutralMode(NeutralMode.Brake);
-        angleMotor.setInverted(true);
+        angleMotor.setInverted(false);
         angleMotor.setSensorPhase(false);
 
         ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
